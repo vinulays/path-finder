@@ -2,7 +2,9 @@ package org.example;
 
 public class MapData {
     private char[][] map;
+//    Height of the map
     private int height;
+//    Width of the map
     private int width;
 //    Coordinates of the starting position
     private int startRow;
