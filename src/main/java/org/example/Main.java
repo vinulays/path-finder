@@ -41,50 +41,28 @@ public class Main {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             lines = reader.lines().toArray(String[]::new);
-            height = lines.length;
             for (String line : lines) {
+//                Getting the width of the map
                 width = Math.max(width, line.length());
+                height++;
+
+//                Getting coordinates of starting & ending positions
+                for (int i = 0; i < line.length(); i++) {
+                    char c = line.charAt(i);
+                    if (c == 'S') {
+                        startRow = height;
+                        startColumn = i + 1;
+                    } else if (c == 'F') {
+                        finishRow = height;
+                        finishColumn = i + 1;
+                    }
+                }
             }
         }
 
         char[][] grid = new char[height][width];
 
-        // Binary search to find start and finish locations
         for (int i = 0; i < height; i++) {
-            int left = 0;
-            int right = width - 1;
-
-            // Binary search for start location
-            while (left <= right) {
-                int mid = left + (right - left) / 2;
-                if (lines[i].charAt(mid) == 'S') {
-                    startRow = i;
-                    startColumn = mid;
-                    break;
-                } else if (lines[i].charAt(mid) < 'S') {
-                    left = mid + 1;
-                } else {
-                    right = mid - 1;
-                }
-            }
-
-            // Binary search for finish location
-            left = 0;
-            right = width - 1;
-            while (left <= right) {
-                int mid = left + (right - left) / 2;
-                if (lines[i].charAt(mid) == 'F') {
-                    finishRow = i;
-                    finishColumn = mid;
-                    break;
-                } else if (lines[i].charAt(mid) < 'F') {
-                    left = mid + 1;
-                } else {
-                    right = mid - 1;
-                }
-            }
-
-            // Construct the grid
             for (int j = 0; j < width; j++) {
                 if (j < lines[i].length()) {
                     grid[i][j] = lines[i].charAt(j);
@@ -92,9 +70,8 @@ public class Main {
                     grid[i][j] = '.';
                 }
             }
-
-
         }
+
         return new MapData(grid, height, width, startRow, startColumn, finishRow, finishColumn);
 
 
