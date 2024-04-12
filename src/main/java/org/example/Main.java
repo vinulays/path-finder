@@ -20,13 +20,8 @@ public class Main {
         System.out.println("Start Location: (" + mapData.getStartColumn() + ", " + mapData.getStartRow() + ")");
         System.out.println("Finish Location: (" + mapData.getFinishColumn() + ", " + mapData.getFinishRow() + ")");
 
-//        System.out.println("Map:");
-//        for (char[] row : mapData.getMap()) {
-//            for (char cell : row) {
-//                System.out.print(cell + " ");
-//            }
-//            System.out.println();
-//        }
+        Graph graph = createGraph(mapData);
+        graph.printGraph();
 
     }
 
@@ -75,5 +70,35 @@ public class Main {
         return new MapData(grid, height, width, startRow, startColumn, finishRow, finishColumn);
 
 
+    }
+
+    public static Graph createGraph(MapData mapData) {
+        int height = mapData.getHeight();
+        int width = mapData.getWidth();
+
+        Graph graph = new Graph(height * width);
+
+        for (int i = 1; i <= height; i++) {
+            for (int j = 1; j <= width; j++) {
+                int index = (i - 1) * width + j;
+                if (mapData.getMap()[i][j] != '0') {
+                    // Add edges to neighbors (up, down, left, right)
+                    if (i > 1 && mapData.getMap()[i - 1][j] != '0') {
+                        graph.addEdge(index, index - width);
+                    }
+                    if (i < height && mapData.getMap()[i + 1][j] != '0') {
+                        graph.addEdge(index, index + width);
+                    }
+                    if (j > 1 && mapData.getMap()[i][j - 1] != '0') {
+                        graph.addEdge(index, index - 1);
+                    }
+                    if (j < width && mapData.getMap()[i][j + 1] != '0') {
+                        graph.addEdge(index, index + 1);
+                    }
+                }
+            }
+        }
+
+        return graph;
     }
 }
