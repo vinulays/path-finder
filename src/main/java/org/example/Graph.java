@@ -1,19 +1,16 @@
 package org.example;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Graph {
-    private final Map<Vertex, List<Vertex>> adjacencyVertices;
+    private final Map<Vertex, Set<Vertex>> adjacencyVertices;
 
     public Graph() {
         this.adjacencyVertices = new HashMap<>();
     }
 
     void addVertex(String label) {
-        adjacencyVertices.putIfAbsent(new Vertex(label), new ArrayList<>());
+        adjacencyVertices.putIfAbsent(new Vertex(label), new HashSet<>());
 
     }
 
@@ -36,8 +33,8 @@ public class Graph {
         Vertex v1 = new Vertex(label1);
         Vertex v2 = new Vertex(label2);
 
-        List<Vertex> eV1 = adjacencyVertices.get(v1);
-        List<Vertex> eV2 = adjacencyVertices.get(v2);
+        Set<Vertex> eV1 = adjacencyVertices.get(v1);
+        Set<Vertex> eV2 = adjacencyVertices.get(v2);
 
         if (eV1 != null)
             eV1.remove(v2);
@@ -45,15 +42,15 @@ public class Graph {
             eV2.remove(v1);
     }
 
-    List<Vertex> getAdjVertices(String label) {
+    Set<Vertex> getAdjVertices(String label) {
         return adjacencyVertices.get(new Vertex(label));
     }
 
     public void printGraph() {
         System.out.println("Graph:");
-        for (Map.Entry<Vertex, List<Vertex>> entry : adjacencyVertices.entrySet()) {
+        for (Map.Entry<Vertex, Set<Vertex>> entry : adjacencyVertices.entrySet()) {
             Vertex vertex = entry.getKey();
-            List<Vertex> adjacentVertices = entry.getValue();
+            Set<Vertex> adjacentVertices = entry.getValue();
             System.out.print("Vertex " + vertex.getLabel() + ": ");
             for (Vertex adjacentVertex : adjacentVertices) {
                 System.out.print(adjacentVertex.getLabel() + " ");
