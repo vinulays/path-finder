@@ -22,7 +22,6 @@ public class Main {
 
         Graph graph = createGraph(mapData);
         graph.printGraph();
-
     }
 
     public static MapData parseMap(String filename) throws IOException {
@@ -76,29 +75,48 @@ public class Main {
         int height = mapData.getHeight();
         int width = mapData.getWidth();
 
-        Graph graph = new Graph(height * width);
+        char[][] matrix = mapData.getMap();
 
-        for (int i = 1; i <= height; i++) {
-            for (int j = 1; j <= width; j++) {
-                int index = (i - 1) * width + j;
-                if (mapData.getMap()[i][j] != '0') {
+        Graph graph = new Graph();
+
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (matrix[i][j] != '0') {
+                    String label = "(" + (i + 1) + ", " + (j + 1) + ")";
+                    graph.addVertex(label);
+                }
+            }
+        }
+
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (matrix[i][j] != '0') {
+                    String label = "(" + (i + 1) + ", " + (j + 1) + ")";
                     // Add edges to neighbors (up, down, left, right)
-                    if (i > 1 && mapData.getMap()[i - 1][j] != '0') {
-                        graph.addEdge(index, index - width);
+                    if (i > 0 && matrix[i - 1][j] != '0') {
+                        String neighborLabel = "(" + i + ", " + (j + 1) + ")";
+                        graph.addEdge(label, neighborLabel);
                     }
-                    if (i < height && mapData.getMap()[i + 1][j] != '0') {
-                        graph.addEdge(index, index + width);
+                    if (i < height - 1 && matrix[i + 1][j] != '0') {
+                        String neighborLabel = "(" + (i + 2) + ", " + (j + 1) + ")";
+                        graph.addEdge(label, neighborLabel);
                     }
-                    if (j > 1 && mapData.getMap()[i][j - 1] != '0') {
-                        graph.addEdge(index, index - 1);
+                    if (j > 0 && matrix[i][j - 1] != '0') {
+                        String neighborLabel = "(" + (i + 1) + ", " + j + ")";
+                        graph.addEdge(label, neighborLabel);
                     }
-                    if (j < width && mapData.getMap()[i][j + 1] != '0') {
-                        graph.addEdge(index, index + 1);
+                    if (j < width - 1 && matrix[i][j + 1] != '0') {
+                        String neighborLabel = "(" + (i + 1) + ", " + (j + 2) + ")";
+                        graph.addEdge(label, neighborLabel);
                     }
                 }
             }
         }
 
         return graph;
+
+
     }
+
+
 }
