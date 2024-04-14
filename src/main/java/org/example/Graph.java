@@ -4,14 +4,21 @@ import java.util.*;
 
 public class Graph {
     private final Map<Vertex, Set<Vertex>> adjacencyVertices;
+    private final Set<Vertex> vertices;
 
     public Graph() {
         this.adjacencyVertices = new HashMap<>();
+        this.vertices = new HashSet<>();
     }
 
     void addVertex(String label) {
+        vertices.add(new Vertex(label));
         adjacencyVertices.putIfAbsent(new Vertex(label), new HashSet<>());
 
+    }
+
+    public Set<Vertex> getVertices() {
+        return vertices;
     }
 
     void removeVertex(String label) {
