@@ -20,8 +20,10 @@ public class Main {
         System.out.println("Height: " + mapData.getHeight());
         System.out.println("Start Location: (" + mapData.getStartColumn() + ", " + mapData.getStartRow() + ")");
         System.out.println("Finish Location: (" + mapData.getFinishColumn() + ", " + mapData.getFinishRow() + ")");
+        System.out.println();
 
         Graph graph = createGraph(mapData);
+
         List<String> shortestPath = findShortestPath(graph, mapData);
 
         System.out.println("1. Start at " + "(" + mapData.getStartColumn() + ", " + mapData.getStartRow() + ")");
@@ -91,7 +93,7 @@ public class Main {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 if (matrix[i][j] != '0') {
-                    String label = "(" + (i + 1) + ", " + (j + 1) + ")";
+                    String label = "(" + (j + 1) + ", " + (i + 1) + ")";
                     graph.addVertex(label);
                 }
             }
@@ -100,22 +102,22 @@ public class Main {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 if (matrix[i][j] != '0') {
-                    String label = "(" + (i + 1) + ", " + (j + 1) + ")";
+                    String label = "(" + (j + 1) + ", " + (i + 1) + ")";
                     // Add edges to neighbors (up, down, left, right)
                     if (i > 0 && matrix[i - 1][j] != '0') {
-                        String neighborLabel = "(" + i + ", " + (j + 1) + ")";
+                        String neighborLabel = "(" + (j + 1) + ", " + i + ")";
                         graph.addEdge(label, neighborLabel);
                     }
                     if (i < height - 1 && matrix[i + 1][j] != '0') {
-                        String neighborLabel = "(" + (i + 2) + ", " + (j + 1) + ")";
+                        String neighborLabel = "(" + (j + 1) + ", " + (i + 2) + ")";
                         graph.addEdge(label, neighborLabel);
                     }
                     if (j > 0 && matrix[i][j - 1] != '0') {
-                        String neighborLabel = "(" + (i + 1) + ", " + j + ")";
+                        String neighborLabel = "(" + j + ", " + (i + 1) + ")";
                         graph.addEdge(label, neighborLabel);
                     }
                     if (j < width - 1 && matrix[i][j + 1] != '0') {
-                        String neighborLabel = "(" + (i + 1) + ", " + (j + 2) + ")";
+                        String neighborLabel = "(" + (j + 2) + ", " + (i + 1) + ")";
                         graph.addEdge(label, neighborLabel);
                     }
                 }
@@ -123,13 +125,12 @@ public class Main {
         }
 
         return graph;
-
-
     }
 
+
     public static List<String> findShortestPath(Graph graph, MapData mapData) {
-        String start = "(" + mapData.getStartRow() + ", " + mapData.getStartColumn() + ")";
-        String finish = "(" + mapData.getFinishRow() + ", " + mapData.getFinishColumn() + ")";
+        String start = "(" + mapData.getStartColumn() + ", " + mapData.getStartRow() + ")";
+        String finish = "(" + mapData.getFinishColumn() + ", " + mapData.getFinishRow() + ")";
 
         Map<String, String> previous = new HashMap<>();
         Map<String, Integer> distances = new HashMap<>();
@@ -179,18 +180,18 @@ public class Main {
 
 
     private static String getDirection(String fromVertex, String toVertex) {
-        int fromRow = Integer.parseInt(fromVertex.substring(1, fromVertex.indexOf(",")));
-        int fromCol = Integer.parseInt(fromVertex.substring(fromVertex.indexOf(",") + 1, fromVertex.length() - 1).trim());
+        int fromColumn = Integer.parseInt(fromVertex.substring(1, fromVertex.indexOf(",")));
+        int fromRow = Integer.parseInt(fromVertex.substring(fromVertex.indexOf(",") + 1, fromVertex.length() - 1).trim());
 
-        int toRow = Integer.parseInt(toVertex.substring(1, toVertex.indexOf(",")));
-        int toCol = Integer.parseInt(toVertex.substring(toVertex.indexOf(",") + 1, toVertex.length() - 1).trim());
+        int toColumn = Integer.parseInt(toVertex.substring(1, toVertex.indexOf(",")));
+        int toRow = Integer.parseInt(toVertex.substring(toVertex.indexOf(",") + 1, toVertex.length() - 1).trim());
 
         if (fromRow < toRow) {
             return "Move down to " + toVertex;
         } else if (fromRow > toRow) {
             return "Move up to " + toVertex;
         } else {
-            if (fromCol < toCol) {
+            if (fromColumn < toColumn) {
                 return "Move right to " + toVertex;
             } else {
                 return "Move left to " + toVertex;
@@ -200,34 +201,34 @@ public class Main {
 
     private static int calculateDistance(String current, String neighbor, MapData mapData) {
         // Extract the row and column indices from the vertex labels
-        int currentRow = Integer.parseInt(current.substring(1, current.indexOf(",")));
-        int currentCol = Integer.parseInt(current.substring(current.indexOf(",") + 1, current.length() - 1).trim());
+        int currentColumn = Integer.parseInt(current.substring(1, current.indexOf(",")));
+        int currentRow = Integer.parseInt(current.substring(current.indexOf(",") + 1, current.length() - 1).trim());
 
-        int neighborRow = Integer.parseInt(neighbor.substring(1, neighbor.indexOf(",")));
-        int neighborCol = Integer.parseInt(neighbor.substring(neighbor.indexOf(",") + 1, neighbor.length() - 1).trim());
+        int neighborColumn = Integer.parseInt(neighbor.substring(1, neighbor.indexOf(",")));
+        int neighborRow = Integer.parseInt(neighbor.substring(neighbor.indexOf(",") + 1, neighbor.length() - 1).trim());
 
         // Calculate the distance based on sliding movement
         int distance = 0;
 
         // Determine the direction of movement (up, down, left, or right)
         if (currentRow == neighborRow) { // Movement is horizontal
-            distance = Math.abs(currentCol - neighborCol);
-        } else if (currentCol == neighborCol) { // Movement is vertical
+            distance = Math.abs(currentColumn - neighborColumn);
+        } else if (currentColumn == neighborColumn) { // Movement is vertical
             distance = Math.abs(currentRow - neighborRow);
         }
 
         // Check for obstacles (0 cells) in the path and update distance accordingly
         for (int i = 1; i <= distance; i++) {
             int nextRow = currentRow;
-            int nextCol = currentCol;
+            int nextColumn = currentColumn;
             if (currentRow == neighborRow) { // Movement is horizontal
-                nextCol = currentCol < neighborCol ? currentCol + i : currentCol - i;
+                nextColumn = currentColumn < neighborColumn ? currentColumn + i : currentColumn - i;
             } else { // Movement is vertical
                 nextRow = currentRow < neighborRow ? currentRow + i : currentRow - i;
             }
 
             // Check if the next position contains an obstacle
-            if (mapData.getMap()[nextRow - 1][nextCol - 1] == '0') {
+            if (mapData.getMap()[nextRow - 1][nextColumn - 1] == '0') {
                 distance = i - 1; // Adjust distance to stop at the obstacle
                 break;
             }
