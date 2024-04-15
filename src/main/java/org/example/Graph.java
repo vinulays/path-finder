@@ -1,26 +1,27 @@
 package org.example;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class Graph {
-    private int V;
-    private final LinkedList<Integer>[] adjList;
-    public Graph(int vertices) {
-        this.V = vertices;
-        adjList = new LinkedList[V];
+    private final Map<Integer, LinkedList<Integer>> adjList;
 
-        for (int i = 0; i < V; i++) {
-            adjList[i] = new LinkedList<>();
+    public Graph(int vertices) {
+        adjList = new HashMap<>();
+
+        for (int i = 0; i < vertices; i++) {
+            adjList.put(i, new LinkedList<>());
         }
     }
 
     public void addEdge(int src, int dest) {
-        adjList[src].add(dest);
+        adjList.get(src).add(dest);
     }
 
     public List<Integer> getNeighbors(int vertex) {
-        return adjList[vertex];
+        return adjList.get(vertex);
     }
 
 }
