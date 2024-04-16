@@ -47,23 +47,21 @@ public class MapData {
 
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
+//                Skipping vertices with 0 (walls).
                 if (map[i][j] == '0') continue;
                 int from = i * width + j;
+//                Checking for adjacent vertices by checking four cardinal directions (up,down,right,left)
                 for (int k = 0; k < 4; k++) {
-                    int nx = i + dx[k];
-                    int ny = j + dy[k];
-                    if (nx >= 0 && nx < height && ny >= 0 && ny < width && map[nx][ny] != '0') {
-                        int to = nx * width + ny;
+                    int neighborX = i + dx[k];
+                    int neighborY = j + dy[k];
+
+                    if (neighborX >= 0 && neighborX < height && neighborY >= 0 && neighborY < width && map[neighborX][neighborY] != '0') {
+                        int to = neighborX * width + neighborY;
                         graph.addEdge(from, to);
                     }
                 }
             }
         }
-    }
-
-    public List<Integer> getNeighbors(int x, int y) {
-        int index = x * width + y;
-        return graph.getNeighbors(index);
     }
 
     public List<String> findShortestPath() {
@@ -76,6 +74,7 @@ public class MapData {
                     start = i * width + j;
                 } else if (map[i][j] == 'F') {
                     finish = i * width + j;
+
                 }
             }
         }
@@ -89,29 +88,61 @@ public class MapData {
 
         while (!queue.isEmpty()) {
             int current = queue.poll();
-
             if (current == finish) {
                 return constructPath(parent, finish);
             }
 
             List<Integer> neighbors = graph.getNeighbors(current);
+
             for (int neighbor : neighbors) {
                 if (!visited.contains(neighbor)) {
-                    queue.offer(neighbor);
-                    visited.add(neighbor);
-                    parent.put(neighbor, current);
+                    if(map[neighbor / width][neighbor % width] == 'F'){
+                        System.out.println("F found!");
+                    }
+
+                    if (map[neighbor / width][neighbor % width] == '.') {
+                        // Slide in the same direction until hitting a wall or a rock
+                        int dx = (neighbor / width) - (current / width);
+                        int dy = (neighbor % width) - (current % width);
+
+                        int nextX = neighbor / width;
+                        int nextY = neighbor % width;
+
+
+                        while (nextX >= 0 && nextX < height && nextY >= 0 && nextY < width && map[nextX][nextY] == '.') {
+                            visited.add(nextX * width + nextY);
+
+                            nextX += dx;
+                            nextY += dy;
+                        }
+
+                        int slidingCell = (nextX - dx) * width + (nextY - dy);
+
+                        if (slidingCell != current) {
+                            queue.offer(slidingCell);
+                            visited.add(slidingCell);
+                            parent.put(slidingCell, current);
+                        }
+
+                    } else {
+                        // Normal BFS traversal for non-ice cells
+                        queue.offer(neighbor);
+                        visited.add(neighbor);
+                        parent.put(neighbor, current);
+                    }
                 }
             }
         }
-
-        return null; // No path found
+        return null;//        return null; // No path found
     }
 
-    private List<String> constructPath(Map<Integer, Integer> parent, int finish) {
+
+
+     private List<String> constructPath(Map<Integer, Integer> parent, int finish) {
+         System.out.println(parent.size());
+
         List<String> path = new ArrayList<>();
         int current = finish;
-        int[] dx = {-1, 1, 0, 0};
-        int[] dy = {0, 0, -1, 1};
 
         while (parent.containsKey(current)) {
             int currentX = current % width;
@@ -154,5 +185,6 @@ public class MapData {
 
         return numberedPath;
     }
+
 
 }
