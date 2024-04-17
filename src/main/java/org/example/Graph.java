@@ -1,9 +1,6 @@
 package org.example;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Graph {
     private final int V;
@@ -11,13 +8,16 @@ public class Graph {
     private final int finishPosition;
 
     private final int width;
+
+    private final char[][] map;
     private final Map<Integer, LinkedList<Integer>> adjList;
 
-    public Graph(int vertices, int startPosition, int finishPosition, int width) {
+    public Graph(int vertices, int startPosition, int finishPosition, int width, char[][] map) {
         V = vertices;
         this.startPosition = startPosition;
         this.finishPosition = finishPosition;
         this.width = width;
+        this.map = map;
 
         adjList = new HashMap<>();
 
@@ -38,6 +38,12 @@ public class Graph {
         return V;
     }
 
+    void printMap() {
+        for (char[] row : map) {
+            System.out.println(Arrays.toString(row));
+        }
+    }
+
     public int getStartPosition() {
         return startPosition;
     }
@@ -48,5 +54,9 @@ public class Graph {
 
     public int getWidth() {
         return width;
+    }
+
+    public char[][] getMap() {
+        return map;
     }
 }

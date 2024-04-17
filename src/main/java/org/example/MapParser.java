@@ -14,7 +14,9 @@ public class MapParser {
         int width, height;
         int startX = -1, startY = -1, finishX = -1, finishY = -1;
 
+
         List<String> mapLines = new ArrayList<>();
+
         int y = 0;
         while ((line = reader.readLine()) != null) {
             mapLines.add(line);
@@ -34,11 +36,18 @@ public class MapParser {
         width = mapLines.get(0).length();
         height = mapLines.size();
 
+        char[][] map = new char[height][];
+        for (int i = 0; i < mapLines.size(); i++) {
+            map[i] = mapLines.get(i).toCharArray();
+
+        }
+
         int startPosition = startX * width + startY;
         int finishPosition = finishX * width + finishY;
 
+
 //      Creating the graph
-        Graph graph = new Graph(height * width, startPosition, finishPosition, width);
+        Graph graph = new Graph(height * width, startPosition, finishPosition, width, map);
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 char c = mapLines.get(i).charAt(j);

@@ -15,7 +15,7 @@ public class Main {
         try {
             Graph graph = MapParser.parseMap(scanner.nextLine());
 
-            List<String> path = Dijkstra.findShortestPath(graph, graph.getStartPosition(), graph.getFinishPosition(), graph.getWidth());
+            List<String> path = Dijkstra.findShortestPath(graph, graph.getMap(), graph.getStartPosition(), graph.getFinishPosition(), graph.getWidth());
             if (path.isEmpty()) {
                 System.out.println("No Path Found!");
             } else {

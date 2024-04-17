@@ -3,8 +3,10 @@ package org.example;
 import java.util.*;
 
 public class Dijkstra {
-    static List<String> findShortestPath(Graph graph, int start, int finish, int width) {
+    static List<String> findShortestPath(Graph graph, char[][] map, int start, int finish, int width) {
         String startPosition = "(" + ((start / width) + 1) + ", " + ((start % width) + 1) + ")";
+//        graph.printMap();
+        int height = map.length;
 
         int V = graph.getV();
         int[] distances = new int[V];
@@ -17,15 +19,36 @@ public class Dijkstra {
 
         while (!pq.isEmpty()) {
             int u = pq.poll();
-            List<Integer> neighbors = graph.getNeighbors(u);
-            for (Integer v : neighbors) {
-                int alt = distances[u] + 1; // Assuming edge weight is 1
-                if (alt < distances[v]) {
-                    distances[v] = alt;
-                    prev[v] = u;
-                    pq.add(v);
+
+            int currentX = u / width;
+            int currentY = u % width;
+
+            int[] dx = {0, 1, 0, -1};
+            int[] dy = {-1, 0, 1, 0};
+
+            for (int k = 0; k < 4; k++) {
+                int nx = currentX + dx[k];
+                int ny = currentY + dy[k];
+
+                if (nx >= 0 && nx < width && ny >= 0 && ny < height && map[ny][nx] != '0') {
+                    int v = nx * width + ny;
+                    int alt = distances[u] + 1; // Assuming edge weight is 1
+                    if (alt < distances[v]) {
+                        distances[v] = alt;
+                        prev[v] = u;
+                        pq.add(v);
+                    }
                 }
             }
+//            List<Integer> neighbors = graph.getNeighbors(u);
+//            for (Integer v : neighbors) {
+//                int alt = distances[u] + 1; // Assuming edge weight is 1
+//                if (alt < distances[v]) {
+//                    distances[v] = alt;
+//                    prev[v] = u;
+//                    pq.add(v);
+//                }
+//            }
         }
 
         List<String> path = new ArrayList<>();
