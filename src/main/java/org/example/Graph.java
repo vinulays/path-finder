@@ -44,6 +44,28 @@ public class Graph {
         }
     }
 
+    public int getDx(int u, int v) {
+        int dx = 0;
+        int uX = u / getWidth();
+        int vX = v / getWidth();
+
+        if (uX != vX) {
+            dx = vX - uX;
+        }
+        return dx;
+    }
+
+    public int getDy(int u, int v) {
+        int dy = 0;
+        int uY = u % getWidth();
+        int vY = v % getWidth();
+
+        if (uY != vY) {
+            dy = vY - uY;
+        }
+        return dy;
+    }
+
     public int getStartPosition() {
         return startPosition;
     }

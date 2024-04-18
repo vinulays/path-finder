@@ -51,20 +51,20 @@ public class MapParser {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 char c = mapLines.get(i).charAt(j);
-                if (c != '0') {
-                    if (j > 0 && mapLines.get(i).charAt(j - 1) != '0') {
-                        graph.addEdge(i * width + j, i * width + j - 1); // left
-                    }
-                    if (j < width - 1 && mapLines.get(i).charAt(j + 1) != '0') {
-                        graph.addEdge(i * width + j, i * width + j + 1); // right
-                    }
-                    if (i > 0 && mapLines.get(i - 1).charAt(j) != '0') {
-                        graph.addEdge(i * width + j, (i - 1) * width + j); // up
-                    }
-                    if (i < height - 1 && mapLines.get(i + 1).charAt(j) != '0') {
-                        graph.addEdge(i * width + j, (i + 1) * width + j); // down
-                    }
+
+                if (j > 0) {
+                    graph.addEdge(i * width + j, i * width + j - 1); // left
                 }
+                if (j < width - 1) {
+                    graph.addEdge(i * width + j, i * width + j + 1); // right
+                }
+                if (i > 0) {
+                    graph.addEdge(i * width + j, (i - 1) * width + j); // up
+                }
+                if (i < height - 1) {
+                    graph.addEdge(i * width + j, (i + 1) * width + j); // down
+                }
+
             }
         }
 

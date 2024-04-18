@@ -6,57 +6,51 @@ public class Dijkstra {
     static List<String> findShortestPath(Graph graph, char[][] map, int start, int finish, int width) {
         String startPosition = "(" + ((start / width) + 1) + ", " + ((start % width) + 1) + ")";
 //        graph.printMap();
+
         int height = map.length;
 
         int V = graph.getV();
         int[] distances = new int[V];
         int[] prev = new int[V];
-        PriorityQueue<Integer> pq = new PriorityQueue<>(V, Comparator.comparingInt(i -> distances[i]));
+
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(V, Comparator.comparingInt(i -> distances[i]));
 
         Arrays.fill(distances, Integer.MAX_VALUE);
         distances[start] = 0;
-        pq.add(start);
+        priorityQueue.add(start);
 
-        while (!pq.isEmpty()) {
-            int u = pq.poll();
+        while (!priorityQueue.isEmpty()) {
+            int currentNode = priorityQueue.poll();
 
-            int currentX = u / width;
-            int currentY = u % width;
+            for (int neighborNode : graph.getNeighbors(currentNode)) {
 
-            int[] dx = {0, 1, 0, -1};
-            int[] dy = {-1, 0, 1, 0};
+                int neighborX = neighborNode / width;
+                int neighborY = neighborNode % width;
 
-            for (int k = 0; k < 4; k++) {
-                int nx = currentX + dx[k];
-                int ny = currentY + dy[k];
+                int[] finalPosition = slideOnIce(neighborX, neighborY, graph.getDx(currentNode, neighborNode), graph.getDy(currentNode, neighborNode), width, height, map);
+                int slideStopX = finalPosition[0];
+                int slideStopY = finalPosition[1];
+                int slideStopNode = slideStopX * width + slideStopY;
 
-                if (nx >= 0 && nx < width && ny >= 0 && ny < height && map[ny][nx] != '0') {
-                    int v = nx * width + ny;
-                    int alt = distances[u] + 1; // Assuming edge weight is 1
-                    if (alt < distances[v]) {
-                        distances[v] = alt;
-                        prev[v] = u;
-                        pq.add(v);
+                if (slideStopX >= 0 && slideStopX < width && slideStopY >= 0 && slideStopY < height && map[slideStopY][slideStopX] != '0') {
+
+                    int alternatePathDistance = distances[currentNode] + 1; // Assuming edge weight is 1
+                    if (alternatePathDistance < distances[slideStopNode]) {
+                        distances[slideStopNode] = alternatePathDistance;
+                        prev[slideStopNode] = currentNode;
+                        priorityQueue.add(slideStopNode);
                     }
                 }
             }
-//            List<Integer> neighbors = graph.getNeighbors(u);
-//            for (Integer v : neighbors) {
-//                int alt = distances[u] + 1; // Assuming edge weight is 1
-//                if (alt < distances[v]) {
-//                    distances[v] = alt;
-//                    prev[v] = u;
-//                    pq.add(v);
-//                }
-//            }
         }
 
         List<String> path = new ArrayList<>();
         for (int at = finish; at != start; at = prev[at]) {
+//            If no path found, return an empty list
             if (at == 0) {
                 return new ArrayList<>();
             }
-            // No path found
+
 
             path.add(getDirection(prev[at], at, width));
         }
@@ -73,6 +67,21 @@ public class Dijkstra {
         return numberedPath;
     }
 
+    private static int[] slideOnIce(int desiredX, int desiredY, int dx, int dy, int width, int height, char[][] map) {
+        int lastValidX = desiredX;  // Track last valid position
+        int lastValidY = desiredY;
+
+        while (desiredX >= 0 && desiredX < width && desiredY >= 0 && desiredY < height && map[desiredY][desiredX] != '0') {
+            lastValidX = desiredX;  // Update last valid position if space is valid
+            lastValidY = desiredY;
+
+            desiredX += dx;
+            desiredY += dy;
+        }
+
+        return new int[]{lastValidX, lastValidY};
+    }
+
     private static String getDirection(int from, int to, int width) {
         int fromX = from / width;
         int fromY = from % width;
@@ -86,4 +95,7 @@ public class Dijkstra {
         if (toY > fromY) return "Move down to (" + (toX + 1) + "," + (toY + 1) + ")";
         return "";
     }
+
+
 }
+
