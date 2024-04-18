@@ -45,15 +45,13 @@ public class Dijkstra {
         }
 
         List<String> path = new ArrayList<>();
-        for (int at = finish; at != start; at = prev[at]) {
-//            If no path found, return an empty list
-            if (at == 0) {
-                return new ArrayList<>();
-            }
 
-
+        int at = finish;
+        while (at != start) {
             path.add(getDirection(prev[at], at, width));
+            at = prev[at];
         }
+
         path.add("Start at " + startPosition);
 
         Collections.reverse(path);
