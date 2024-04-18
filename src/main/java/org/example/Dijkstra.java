@@ -10,7 +10,6 @@ public class Dijkstra {
         System.out.println("Finish Position: " + finishPosition);
         System.out.println();
 
-
         int height = map.length;
 
         int V = graph.getV();
@@ -23,7 +22,7 @@ public class Dijkstra {
         distances[start] = 0;
         priorityQueue.add(start);
 
-
+// todo F found, stop exploring
         while (!priorityQueue.isEmpty()) {
             int currentNode = priorityQueue.poll();
 
@@ -76,17 +75,21 @@ public class Dijkstra {
         int lastValidX = desiredX;  // Track last valid position
         int lastValidY = desiredY;
 
+
         while (desiredX >= 0 && desiredX < width && desiredY >= 0 && desiredY < height && map[desiredY][desiredX] != '0') {
             lastValidX = desiredX;  // Update last valid position if space is valid
             lastValidY = desiredY;
 
+//            Retuning the finish position if found during sliding
+            if (desiredX * width + desiredY == finish) {
+
+                return new int[]{desiredX, desiredY};
+            }
+
             desiredX += dx;
             desiredY += dy;
 
-            if (desiredX * width + desiredY == finish) {
-                // Return finish position if found
-                return new int[]{desiredX, desiredY};
-            }
+
         }
 
         return new int[]{lastValidX, lastValidY};
