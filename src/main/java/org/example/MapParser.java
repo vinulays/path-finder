@@ -50,8 +50,6 @@ public class MapParser {
         Graph graph = new Graph(height * width, startPosition, finishPosition, width, map);
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                char c = mapLines.get(i).charAt(j);
-
                 if (j > 0) {
                     graph.addEdge(i * width + j, i * width + j - 1); // left
                 }

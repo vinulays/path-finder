@@ -5,7 +5,11 @@ import java.util.*;
 public class Dijkstra {
     static List<String> findShortestPath(Graph graph, char[][] map, int start, int finish, int width) {
         String startPosition = "(" + ((start / width) + 1) + ", " + ((start % width) + 1) + ")";
-//        graph.printMap();
+        String finishPosition = "(" + ((finish / width) + 1) + ", " + ((finish % width) + 1) + ")";
+        System.out.println("Start Position: " + startPosition);
+        System.out.println("Finish Position: " + finishPosition);
+        System.out.println();
+
 
         int height = map.length;
 
@@ -19,6 +23,7 @@ public class Dijkstra {
         distances[start] = 0;
         priorityQueue.add(start);
 
+
         while (!priorityQueue.isEmpty()) {
             int currentNode = priorityQueue.poll();
 
@@ -27,9 +32,10 @@ public class Dijkstra {
                 int neighborX = neighborNode / width;
                 int neighborY = neighborNode % width;
 
-                int[] finalPosition = slideOnIce(neighborX, neighborY, graph.getDx(currentNode, neighborNode), graph.getDy(currentNode, neighborNode), width, height, map);
+                int[] finalPosition = slideOnIce(neighborX, neighborY, graph.getDx(currentNode, neighborNode), graph.getDy(currentNode, neighborNode), width, height, map, finish);
                 int slideStopX = finalPosition[0];
                 int slideStopY = finalPosition[1];
+
                 int slideStopNode = slideStopX * width + slideStopY;
 
                 if (slideStopX >= 0 && slideStopX < width && slideStopY >= 0 && slideStopY < height && map[slideStopY][slideStopX] != '0') {
@@ -41,6 +47,7 @@ public class Dijkstra {
                         priorityQueue.add(slideStopNode);
                     }
                 }
+
             }
         }
 
@@ -65,7 +72,7 @@ public class Dijkstra {
         return numberedPath;
     }
 
-    private static int[] slideOnIce(int desiredX, int desiredY, int dx, int dy, int width, int height, char[][] map) {
+    private static int[] slideOnIce(int desiredX, int desiredY, int dx, int dy, int width, int height, char[][] map, int finish) {
         int lastValidX = desiredX;  // Track last valid position
         int lastValidY = desiredY;
 
@@ -75,6 +82,11 @@ public class Dijkstra {
 
             desiredX += dx;
             desiredY += dy;
+
+            if (desiredX * width + desiredY == finish) {
+                // Return finish position if found
+                return new int[]{desiredX, desiredY};
+            }
         }
 
         return new int[]{lastValidX, lastValidY};
