@@ -1,8 +1,22 @@
+/**
+ * Student ID: w1871349 / 20212078
+ * Name: Vinula Senarathne
+ */
+
 package org.example;
 
 import java.util.*;
 
 public class Dijkstra {
+    /**
+     * Finds and return shortest path from start position to finish position
+     * @param graph graph to find the path
+     * @param map input character map from the text file
+     * @param start start position of the 'S'
+     * @param finish finish position of the 'F'
+     * @param width width of the map
+     * @return shortest path as a list of strings
+     */
     static List<String> findShortestPath(Graph graph, char[][] map, int start, int finish, int width) {
         String startPosition = "(" + ((start / width) + 1) + ", " + ((start % width) + 1) + ")";
         String finishPosition = "(" + ((finish / width) + 1) + ", " + ((finish % width) + 1) + ")";
@@ -22,7 +36,6 @@ public class Dijkstra {
         distances[start] = 0;
         priorityQueue.add(start);
 
-// todo F found, stop exploring
         while (!priorityQueue.isEmpty()) {
             int currentNode = priorityQueue.poll();
 
@@ -71,28 +84,38 @@ public class Dijkstra {
         return numberedPath;
     }
 
+    /**
+     * Slides the paths until it reaches a '0' or a map edge
+     * @param desiredX x coordinate of the slide start position
+     * @param desiredY y coordinate of the slide end position
+     * @param dx horizontal direction of the slide
+     * @param dy vertical direction of the slide
+     * @param width width of the map
+     * @param height height of the map
+     * @param map character map from the input file
+     * @param finish finish position of the 'F'
+     * @return coordinates of the final position after the slide
+     */
     private static int[] slideOnIce(int desiredX, int desiredY, int dx, int dy, int width, int height, char[][] map, int finish) {
         int lastValidX = desiredX;  // Track last valid position
         int lastValidY = desiredY;
-
 
         while (desiredX >= 0 && desiredX < width && desiredY >= 0 && desiredY < height && map[desiredY][desiredX] != '0') {
             lastValidX = desiredX;  // Update last valid position if space is valid
             lastValidY = desiredY;
 
-//            Retuning the finish position if found during sliding
+//            Returning the finish position if found during sliding
             if (desiredX * width + desiredY == finish) {
-
                 return new int[]{desiredX, desiredY};
             }
 
             desiredX += dx;
             desiredY += dy;
 
-
         }
 
         return new int[]{lastValidX, lastValidY};
+
     }
 
     private static String getDirection(int from, int to, int width) {
@@ -107,6 +130,7 @@ public class Dijkstra {
         if (toY < fromY) return "Move up to (" + (toX + 1) + "," + (toY + 1) + ")";
         if (toY > fromY) return "Move down to (" + (toX + 1) + "," + (toY + 1) + ")";
         return "";
+
     }
 
 
